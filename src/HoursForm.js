@@ -4,11 +4,11 @@ import moment from 'moment';
 
 
 class HoursForm extends Component {
-  initialState = {
-    hours: '',
-    day: '',
-  }
 
+  initialState = {
+    day: '',
+    hours: '',
+  }
   state = this.initialState;
 
   handleChange = (event) => {

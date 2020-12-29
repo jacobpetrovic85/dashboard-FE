@@ -8,28 +8,39 @@ import Table from './Table';
 
 class App extends Component {
   state = {
-    DailyHours: [],
+    DailyHours: this.DailyHours || [],
   }
 
-  // state = {
-  //   characters: [],
-  // }
+  requestLatest () {
+    fetch("http://localhost:3001/dailyHours/list")
+      .then(response => response.json())
+      .then(responseJson=> {
+        this.setState({
+          DailyHours: responseJson.data
+        });
+      });
+  };
 
-  // removeCharacter = (index) => {
-  //   let {characters} =  this.state;
-  //   console.log('running');
-  //   this.setState({
-  //     characters: characters.filter((character, i) => {
-  //       return i !== index;
-  //     })
-  //   });
-  // }
 
-  // handleSubmit = (character) => {
-  //   this.setState({characters: [...this.state.characters, character]});
-  // }
+  componentWillMount() {
+    //Make the first request and then start polling
+    this.requestLatest();
+    this.startPolling();
+  }
 
-    removeHours = (index) => {
+  componentWillUnmount() {
+    this.stopPolling();
+  }
+
+  startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 5000);
+
+  stopPolling = () => {
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
+    }
+
+  removeHours = (index) => {
     let {DailyHours} =  this.state;
     console.log('running');
     this.setState({
@@ -40,25 +51,17 @@ class App extends Component {
   }
 
   handleSubmit = (input) => {
-    console.log("input = ", input);
     this.setState({DailyHours: [...this.state.DailyHours, input]});
   }
 
   render() {
     let {DailyHours} = this.state;
-    // let {characters} =  this.state;
     return (
         <div className="container">
         <HoursForm handleSubmit={this.handleSubmit}/>
         <Table DailyHours={DailyHours} removeHours={this.removeHours} />
         </div>
     );
-    // return (
-    //     <div className="container">
-    //     <Form handleSubmit={this.handleSubmit} />
-    //     <Table characterData={characters} removeCharacter={this.removeCharacter} />
-    //     </div>
-    // );
   }
 }
 
