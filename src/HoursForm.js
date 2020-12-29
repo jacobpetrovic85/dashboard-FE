@@ -12,7 +12,6 @@ class HoursForm extends Component {
   state = this.initialState;
 
   handleChange = (event) => {
-    console.log("event = ", event);
     let {name, value} = event.target;
     let date = moment().format('Do MMMM YYYY - HH:mm');
     this.setState({
@@ -23,16 +22,13 @@ class HoursForm extends Component {
 
   submitForm = () => {
     this.props.handleSubmit(this.state);
-    console.log('state = ', this.state);
     this.setState(this.initialState);
   }
 
   render() {
-    console.log(this.state);
     let {hours} = this.state;
     const dateToFormat = new Date();
     return (
-
         <form>
         <label htmlFor="hours">Hours</label>
         <input

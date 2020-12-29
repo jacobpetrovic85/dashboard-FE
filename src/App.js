@@ -32,7 +32,7 @@ class App extends Component {
     this.stopPolling();
   }
 
-  startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 5000);
+  startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 60000);
 
   stopPolling = () => {
         if (this.interval) {
@@ -42,7 +42,6 @@ class App extends Component {
 
   removeHours = (index) => {
     let {DailyHours} =  this.state;
-    console.log('running');
     this.setState({
       DailyHours: DailyHours.filter((hours, i) => {
         return i !== index;
@@ -52,6 +51,7 @@ class App extends Component {
 
   handleSubmit = (input) => {
     this.setState({DailyHours: [...this.state.DailyHours, input]});
+
   }
 
   render() {
