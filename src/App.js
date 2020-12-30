@@ -44,11 +44,11 @@ class App extends Component {
         }
     }
 
-  removeHours = (index) => {
+  removeHours = (id) => {
     let {DailyHours} =  this.state;
     this.setState({
-      DailyHours: DailyHours.filter((hours, i) => {
-        return i !== index;
+      DailyHours: DailyHours.filter((day, i) => {
+        return day.id !== id;
       })
     });
   }

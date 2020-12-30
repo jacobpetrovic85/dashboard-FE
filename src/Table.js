@@ -20,9 +20,9 @@ let TableHeader = () => {
 let TableBody = (props) => {
     const rows = props.DailyHours.map((row,index) => {
       return (
-      <tr key={index}>
+      <tr key={row.id}>
         <td>{row.hours}</td>
-        <td><button onClick={() => props.removeHours(index)}>Delete</button></td>
+        <td><button onClick={() => props.removeHours(row.id)}>Delete</button></td>
         <td>{row.day}</td>
       </tr>);
     });
