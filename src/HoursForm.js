@@ -29,7 +29,6 @@ class HoursForm extends Component {
 
   render() {
     let {hours, resource} = this.state;
-    const dateToFormat = new Date();
     return (
         <form>
         <label htmlFor="hours">Hours</label>
@@ -48,7 +47,6 @@ class HoursForm extends Component {
       onChange={this.handleChange}
       />
         <input type="button" value="Submit" onClick={this.submitForm} />
-        <Moment format="Do MMMM YYYY - HH:mm">{dateToFormat}</Moment>
       </form>
     );
   }
@@ -62,3 +60,4 @@ export default HoursForm;
       // value={resource}
       // onChange={this.handleChange}
       // />
+//<Moment format="Do MMMM YYYY - HH:mm">{dateToFormat}</Moment>

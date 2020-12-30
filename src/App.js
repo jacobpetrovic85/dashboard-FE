@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
 import HoursForm from './HoursForm';
 import Table from './Table';
+import BTCTable from './BTCTable';
 import * as R from 'ramda';
 import requests from './requests';
-// import handleSave from './saveFile';
-// import Form from './Form';
 
 
 
 class App extends Component {
   state = {
     DailyHours: this.DailyHours || [],
+    DailyBTC: this.DailyBTC || [],
   }
 
   async requestLatest () {
@@ -27,6 +27,8 @@ class App extends Component {
     //Make the first request and then start polling
     this.requestLatest();
     this.startPolling();
+    this.handleBTCRequest();
+    this.startPollingBTC();
   }
 
   componentWillUnmount() {
@@ -34,6 +36,7 @@ class App extends Component {
   }
 
   startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 10000);
+  startPollingBTC = () => this.interval = setInterval(this.handleBTCRequest.bind(this), 900000);
 
   stopPolling = () => {
         if (this.interval) {
@@ -58,12 +61,23 @@ class App extends Component {
     requests(JSON.stringify(input), R.identity, 'POST', 'application/json')('http://localhost:3001/dailyHours/upload');
   }
 
+  handleBTCRequest = () => {
+    requests('', R.dissoc('body')(), 'GET', 'application/json')('https://blockchain.info/ticker')
+      .then(responseJson=> {
+        console.log("responseJson = ", responseJson);
+        this.setState({
+          DailyBTC: [responseJson.EUR]
+        });
+      });
+  }
+
   render() {
-    let {DailyHours} = this.state;
+    let {DailyHours, DailyBTC} = this.state;
     return (
         <div className="container">
         <HoursForm handleSubmit={this.handleSubmit}/>
         <Table DailyHours={DailyHours} removeHours={this.removeHours} />
+        <BTCTable DailyBTC={DailyBTC} handleBTCRequest={this.handleBTCRequest}/>
         </div>
     );
   }
