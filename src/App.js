@@ -13,10 +13,15 @@ class App extends Component {
 
   requestLatest () {
     fetch("http://localhost:3001/dailyHours/list")
-      .then(response => response.json())
+      .then(response => {
+        console.log("response = ", response);
+
+        return response.json();
+      })
       .then(responseJson=> {
+        console.log("responseJson = ", responseJson);
         this.setState({
-          DailyHours: responseJson.data
+          DailyHours: responseJson.data.dailyHours
         });
       });
   };
