@@ -1,12 +1,18 @@
-let requests = (data, fn, method, contentType) => {
+import * as R from 'ramda';
+
+let requests = (data, fn, method, contentType, API_KEY) => {
   let obj = {
     method: method,
     headers: {
-      'Content-type': contentType
+      'Content-type':  'application/json'
     },
     body: data
   };
   let newObj = fn(obj);
+  let newNewObj = R.assocPath(['headers'], API_KEY(newObj), newObj);
+
+  console.log("newObj = ", newObj);
+  console.log("newNewObj = ", newNewObj);
   return async (url) => {
 
     const response = await fetch(url, newObj);
@@ -18,4 +24,4 @@ let requests = (data, fn, method, contentType) => {
 };
 
 
-module.exports = requests;
+export default requests;
