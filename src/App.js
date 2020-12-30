@@ -42,22 +42,18 @@ class App extends Component {
     }
 
   removeHours = (id) => {
-    console.log("id = ", id);
     let {DailyHours} =  this.state;
-    console.log("DailyHours = ", DailyHours);
     this.setState({
       DailyHours: DailyHours.filter((day, i) => {
         return day.id !== id;
       })
     });
     let entryToRemove = JSON.stringify(R.filter(R.propEq('id', id), DailyHours)[0]);
-    console.log("entryToRemove = ", entryToRemove);
     requests(entryToRemove, R.identity, 'DELETE', 'application/json')('http://localhost:3001/dailyHours/delete');
   }
 
 
   handleSubmit = (input) => {
-    console.log("input = ", input);
     this.setState({DailyHours: [...this.state.DailyHours, input]});
     requests(JSON.stringify(input), R.identity, 'POST', 'application/json')('http://localhost:3001/dailyHours/upload');
   }

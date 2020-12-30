@@ -6,8 +6,9 @@ import moment from 'moment';
 class HoursForm extends Component {
 
   initialState = {
-    day: '',
+    resource: '',
     hours: '',
+    day: '',
     id: '',
   }
   state = this.initialState;
@@ -27,7 +28,7 @@ class HoursForm extends Component {
   }
 
   render() {
-    let {hours} = this.state;
+    let {hours, resource} = this.state;
     const dateToFormat = new Date();
     return (
         <form>
@@ -38,6 +39,13 @@ class HoursForm extends Component {
       id="hours"
       value={hours}
       onChange={this.handleChange}
+        />
+                <input
+      type="text"
+      name="resource"
+      id="resource"
+      value={resource}
+      onChange={this.handleChange}
       />
         <input type="button" value="Submit" onClick={this.submitForm} />
         <Moment format="Do MMMM YYYY - HH:mm">{dateToFormat}</Moment>
@@ -47,3 +55,10 @@ class HoursForm extends Component {
 }
 
 export default HoursForm;
+      //   <input
+      // type="text"
+      // name="resource"
+      // id="resource"
+      // value={resource}
+      // onChange={this.handleChange}
+      // />
