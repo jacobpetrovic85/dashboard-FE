@@ -8,6 +8,7 @@ class HoursForm extends Component {
   initialState = {
     day: '',
     hours: '',
+    // id: '',
   }
   state = this.initialState;
 

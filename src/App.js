@@ -15,7 +15,6 @@ class App extends Component {
     fetch("http://localhost:3001/dailyHours/list")
       .then(response => {
         console.log("response = ", response);
-
         return response.json();
       })
       .then(responseJson=> {
@@ -37,7 +36,7 @@ class App extends Component {
     this.stopPolling();
   }
 
-  startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 60000);
+  startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 5000);
 
   stopPolling = () => {
         if (this.interval) {
@@ -54,9 +53,30 @@ class App extends Component {
     });
   }
 
-  handleSubmit = (input) => {
-    this.setState({DailyHours: [...this.state.DailyHours, input]});
+  uploadNewEntry = async (url, data) => {
+    console.log("data = ", data);
+    // Awaiting for fetch response and
+    // defining method, headers and body
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
 
+    // Awaiting response.json()
+    const resData = await response.json();
+
+    // Returning result data
+    return resData;
+  }
+
+  handleSubmit = (input) => {
+    console.log("input = ", input);
+    this.setState({DailyHours: [...this.state.DailyHours, input]});
+    this.uploadNewEntry('http://localhost:3001/dailyHours/upload', input);
+    // this.requestLatest();
   }
 
   render() {
