@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import HoursForm from './HoursForm';
 import Table from './Table';
+import * as R from 'ramda';
+import requests from './requests';
 // import handleSave from './saveFile';
 // import Form from './Form';
 
@@ -11,14 +13,9 @@ class App extends Component {
     DailyHours: this.DailyHours || [],
   }
 
-  requestLatest () {
-    fetch("http://localhost:3001/dailyHours/list")
-      .then(response => {
-        console.log("response = ", response);
-        return response.json();
-      })
+  async requestLatest () {
+    let response = await requests('', R.dissoc('body')(), 'GET', 'application/json')("http://localhost:3001/dailyHours/list")
       .then(responseJson=> {
-        console.log("responseJson = ", responseJson);
         this.setState({
           DailyHours: responseJson.data.dailyHours
         });
@@ -36,7 +33,7 @@ class App extends Component {
     this.stopPolling();
   }
 
-  startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 5000);
+  startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 10000);
 
   stopPolling = () => {
         if (this.interval) {
@@ -45,38 +42,24 @@ class App extends Component {
     }
 
   removeHours = (id) => {
+    console.log("id = ", id);
     let {DailyHours} =  this.state;
+    console.log("DailyHours = ", DailyHours);
     this.setState({
       DailyHours: DailyHours.filter((day, i) => {
         return day.id !== id;
       })
     });
+    let entryToRemove = JSON.stringify(R.filter(R.propEq('id', id), DailyHours)[0]);
+    console.log("entryToRemove = ", entryToRemove);
+    requests(entryToRemove, R.identity, 'DELETE', 'application/json')('http://localhost:3001/dailyHours/delete');
   }
 
-  uploadNewEntry = async (url, data) => {
-    console.log("data = ", data);
-    // Awaiting for fetch response and
-    // defining method, headers and body
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
-
-    // Awaiting response.json()
-    const resData = await response.json();
-
-    // Returning result data
-    return resData;
-  }
 
   handleSubmit = (input) => {
     console.log("input = ", input);
     this.setState({DailyHours: [...this.state.DailyHours, input]});
-    this.uploadNewEntry('http://localhost:3001/dailyHours/upload', input);
-    // this.requestLatest();
+    requests(JSON.stringify(input), R.identity, 'POST', 'application/json')('http://localhost:3001/dailyHours/upload');
   }
 
   render() {

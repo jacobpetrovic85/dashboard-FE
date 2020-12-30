@@ -18,7 +18,8 @@ let TableHeader = () => {
 
 
 let TableBody = (props) => {
-    const rows = props.DailyHours.map((row,index) => {
+  const rows = props.DailyHours.map((row,index) => {
+    console.log("row = ", row);
       return (
       <tr key={row.id}>
         <td>{row.hours}</td>
