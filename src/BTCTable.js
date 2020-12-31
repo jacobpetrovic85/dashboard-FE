@@ -1,5 +1,6 @@
 import requests from './requests';
 import React, {Component} from 'react';
+import * as R from 'ramda';
 
 let TableHeader = () => {
   return (
@@ -7,24 +8,36 @@ let TableHeader = () => {
       <tr>
       <th>BTC Price</th>
       <th>BTC owned</th>
-      <th>Asset in EUR</th>
-      <th></th>
+      <th>Asset value</th>
+      <th>Invested</th>
+      <th>Gained</th>
       </tr>
       </thead>
   );
 };
 
-let TableBody = (props) => {
-  const rows = props.DailyBTC.map((row,index) => {
-    console.log("row = ", row);
+let makeRow = (row, money) => {
     return (
-        <tr key={row}>
+        <tr>
         <td>{row.symbol}{row.last}</td>
-        <td>0.19638805</td>
-        <td>{row.symbol}{(0.19638805 * row.last).toFixed(2)}</td>
+        <td>0,23833482</td>
+        <td>{row.symbol}{(0.23833482 * row.last).toFixed(2)}</td>
+        <td>{row.symbol}{(money).toFixed(2)}</td>
+        <td>{row.symbol}{(0.23833482 * row.last - money).toFixed(2)}</td>
         </tr>);
-  });
-  return <tbody>{rows}</tbody>;
+};
+
+let TableBody = (props) => {
+  const isNotNil = R.complement(R.isEmpty);
+  console.log("props = ", props);
+  const {DailyBTC} = props;
+  if (isNotNil(DailyBTC)){
+    const rowEUR = makeRow(DailyBTC.EUR,3800);
+    const rowUSD = makeRow(DailyBTC.USD,(3800*1.23));
+    return <tbody>{rowEUR}{rowUSD}</tbody>;
+  } else {
+    return<tbody></tbody>;
+  }
 };
 
 class BTCTable extends Component {
@@ -33,7 +46,7 @@ class BTCTable extends Component {
     return (
       <table>
         <TableHeader />
-        <TableBody DailyBTC={DailyBTC}/>
+            <TableBody DailyBTC={DailyBTC}/>
       </table>
     );
   }
