@@ -1,8 +1,9 @@
 let requests = async (obj, url) => {
+  console.log("obj = ", obj);
     const response = await fetch(url, obj);
-    const resData = await response.json();
+    const resdata = await response.json();
 
-    return resData;
+    return resdata;
 };
 
 

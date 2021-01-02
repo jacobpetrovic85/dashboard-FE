@@ -89,11 +89,11 @@ class App extends Component {
   }
 
   handleBTCRequest = () => {
-    requests(getObj, 'https://blockchain.info/ticker')
+    requests(getObj, 'http://localhost:3001/dailyHours/calling/params?start=1&limit=1&convert=EUR')
       .then(responseJson=> {
         console.log("responseJson = ", responseJson);
         this.setState({
-          DailyBTC: responseJson
+          DailyBTC: responseJson.data
         });
       });
   }
@@ -115,6 +115,7 @@ export default App;
 // API key => d9e29c8b-e083-4337-a278-668aa1689477
 // COINMARKETCAP KEY d9e29c8b-e083-4337-a278-668aa1689477
 // curl -H "X-CMC_PRO_API_KEY: d9e29c8b-e083-4337-a278-668aa1689477" -H "Accept: application/json" -d "start=1&limit=1&convert=EUR" -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest
+// https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=1&convert=EUR
 // const rp = require('request-promise');
 // const requestOptions = {
 //   method: 'GET',

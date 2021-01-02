@@ -17,7 +17,6 @@ let TableHeader = () => {
 };
 
 let makeComma = (str) => {
-
   return str.toString().replace(/\./,',');
 };
 
@@ -41,22 +40,24 @@ let formatGainsCalcNumber = (amount, price, money) => R.compose(
 (price);
 
 let makeRow = (row, money) => {
-  let remainder = row.last - money;
+  let BTCprice = row.quote.EUR.price;
   return (
       <tr>
-      <td>{row.symbol}{makeComma(row.last)}</td>
+      <td>{'EUR '}{makeComma(BTCprice)}</td>
       <td>0,23833482</td>
-      <td>{row.symbol}{formatCalcNumber(0.23833482, row.last)}</td>
-      <td>{row.symbol}{makeComma(money.toFixed(2))}</td>
-      <td>{row.symbol}{formatGainsCalcNumber(0.23833482, row.last, money)}</td>
+      <td>{'EUR '}{formatCalcNumber(0.23833482, BTCprice)}</td>
+      <td>{'EUR '}{makeComma(money.toFixed(2))}</td>
+      <td>{'EUR '}{formatGainsCalcNumber(0.23833482, BTCprice, money)}</td>
       </tr>);
 };
 
 let TableBody = (props) => {
+  console.log("props = ", props);
   const {DailyBTC} = props;
+  console.log("DailyBTC = ", DailyBTC);
   if (isNotNil(DailyBTC)){
-    const rowEUR = makeRow(DailyBTC.EUR,3800);
-    const rowUSD = makeRow(DailyBTC.USD,(3800*1.23));
+    const rowEUR = makeRow(DailyBTC.data[0],3800);
+    const rowUSD = makeRow(DailyBTC.data[0],(3800*1.23));
     return <tbody>{rowEUR}{rowUSD}</tbody>;
   } else {
     return<tbody></tbody>;
