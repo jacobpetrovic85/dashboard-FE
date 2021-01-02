@@ -1,12 +1,12 @@
-let requests = async (obj, url) => {
-  console.log("obj = ", obj);
+export async function requests (obj, url)  {
     const response = await fetch(url, obj);
     const resdata = await response.json();
-
     return resdata;
 };
 
-
-// module.exports = requests;
-
-export default requests;
+export async function xmlRequests (obj, url) {
+  console.log("obj = ", obj);
+    const response = await fetch(url, obj);
+    const resdata = await response;
+    return resdata;
+};

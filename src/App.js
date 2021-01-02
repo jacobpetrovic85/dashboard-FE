@@ -3,7 +3,8 @@ import HoursForm from './HoursForm';
 import Table from './Table';
 import BTCTable from './BTCTable';
 import * as R from 'ramda';
-import requests from './requests';
+import * as req from './requests';
+// import xmlRequests from './requests';
 
 
 // GET
@@ -38,11 +39,12 @@ let postDeleteObj = (data, method) => {
 class App extends Component {
   state = {
     DailyHours: this.DailyHours || [],
-    DailyBTC: this.DailyBTC || [],
+    DailyBTC_EUR: this.DailyBTC_EUR || [],
+    DailyBTC_USD: this.DailyBTC_USD || [],
   }
 
   async requestLatest () {
-    let response = await requests(getObj, "http://localhost:3001/dailyHours/list")
+    let response = await req.requests(getObj, "http://localhost:3001/dailyHours/list")
       .then(responseJson=> {
         this.setState({
           DailyHours: responseJson.data.dailyHours
@@ -50,21 +52,21 @@ class App extends Component {
       });
   };
 
-
+  // TODO: replace lifecycle calls with new not soon to be deprecated ones
   componentWillMount() {
     //Make the first request and then start polling
     this.requestLatest();
     this.startPolling();
-    this.handleBTCRequest();
+    this.handleBTCRequests();
     this.startPollingBTC();
   }
-
+  // TODO: replace lifecycle calls with new not soon to be deprecated ones
   componentWillUnmount() {
     this.stopPolling();
   }
 
   startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 10000);
-  startPollingBTC = () => this.interval = setInterval(this.handleBTCRequest.bind(this), 600000);
+  startPollingBTC = () => this.interval = setInterval(this.handleBTCRequests.bind(this), 600000);
 
   stopPolling = () => {
         if (this.interval) {
@@ -80,31 +82,43 @@ class App extends Component {
       })
     });
     let entryToRemove = JSON.stringify(R.filter(R.propEq('id', id), DailyHours)[0]);
-    requests(postDeleteObj(entryToRemove, 'DELETE'), 'http://localhost:3001/dailyHours/delete');
+    req.requests(postDeleteObj(entryToRemove, 'DELETE'), 'http://localhost:3001/dailyHours/delete');
   }
 
   handleSubmit = (input) => {
     this.setState({DailyHours: [...this.state.DailyHours, input]});
-    requests(postDeleteObj(JSON.stringify(input), 'POST'), 'http://localhost:3001/dailyHours/upload');
+    req.requests(postDeleteObj(JSON.stringify(input), 'POST'), 'http://localhost:3001/dailyHours/upload');
   }
 
-  handleBTCRequest = () => {
-    requests(getObj, 'http://localhost:3001/dailyHours/calling/params?start=1&limit=1&convert=EUR')
+  handleBTCRequests = () => {
+    req.requests(getObj, 'http://localhost:3001/dailyHours/calling/params?start=1&limit=1&convert=EUR')
       .then(responseJson=> {
-        console.log("responseJson = ", responseJson);
         this.setState({
-          DailyBTC: responseJson.data
+          DailyBTC_EUR: responseJson.data
         });
       });
+    req.requests(getObj, 'http://localhost:3001/dailyHours/calling/params?start=1&limit=1&convert=USD')
+      .then(responseJson=> {
+        this.setState({
+          DailyBTC_USD: responseJson.data
+        });
+      });
+    // req.xmlRequests(getObj, 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml')
+    //   .then(responseJson=> {
+    //     // this.setState({
+    //     //   EUR_2_USD_rate: responseJson.data
+    //     // });
+    //   });
+    //https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
   }
 
   render() {
-    let {DailyHours, DailyBTC} = this.state;
+    let {DailyHours, DailyBTC_USD, DailyBTC_EUR} = this.state;
     return (
         <div className="container">
         <HoursForm handleSubmit={this.handleSubmit}/>
         <Table DailyHours={DailyHours} removeHours={this.removeHours} />
-        <BTCTable DailyBTC={DailyBTC} handleBTCRequest={this.handleBTCRequest}/>
+        <BTCTable DailyBTC_USD={DailyBTC_USD} DailyBTC_EUR={DailyBTC_EUR} handleBTCRequests={this.handleBTCRequests}/>
         </div>
     );
   }

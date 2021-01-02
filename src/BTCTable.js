@@ -41,25 +41,29 @@ let formatGainsCalcNumber = (amount, price, money) => R.compose(
   curriedCalcNetWorth(amount))
 (price);
 
-let makeRow = (row, money, multiplier, fiat) => {
-  let BTCprice = row.quote.EUR.price;
+let BTCprice = (row, fiat) => R.compose(
+  R.prop('price'),
+  R.prop(fiat),
+  R.prop('quote'))
+(row);
+
+let makeRow = (row, money, fiatSymbol, fiat) => {
+  let price = BTCprice(row,fiat);
   return (
       <tr>
-      <td>{fiat}{R.compose(makeComma,makeFixed2)(BTCprice * multiplier)}</td>
+      <td>{fiatSymbol}{R.compose(makeComma,makeFixed2)(price)}</td>
       <td>0,23833482</td>
-      <td>{fiat}{formatCalcNumber(0.23833482, BTCprice * multiplier)}</td>
-      <td>{fiat}{makeComma(money.toFixed(2))}</td>
-      <td>{fiat}{formatGainsCalcNumber(0.23833482, BTCprice * multiplier, money)}</td>
+      <td>{fiatSymbol}{formatCalcNumber(0.23833482, price)}</td>
+      <td>{fiatSymbol}{makeComma(money.toFixed(2))}</td>
+      <td>{fiatSymbol}{formatGainsCalcNumber(0.23833482, price, money)}</td>
       </tr>);
 };
 
 let TableBody = (props) => {
-  console.log("props = ", props);
-  const {DailyBTC} = props;
-  console.log("DailyBTC = ", DailyBTC);
-  if (isNotNil(DailyBTC)){
-    const rowEUR = makeRow(DailyBTC.data[0],3800, 1, '\u20AC');
-    const rowUSD = makeRow(DailyBTC.data[0],(3800*1.23), 1.22, '\u0024');
+  const {DailyBTC_EUR, DailyBTC_USD} = props;
+  if (isNotNil(DailyBTC_EUR) && isNotNil(DailyBTC_USD)){
+    const rowEUR = makeRow(DailyBTC_EUR.data[0],3800, '\u20AC', 'EUR');
+    const rowUSD = makeRow(DailyBTC_USD.data[0],(3800*1.23), '\u0024', 'USD');
     return <tbody>{rowEUR}{rowUSD}</tbody>;
   } else {
     return<tbody></tbody>;
@@ -68,38 +72,14 @@ let TableBody = (props) => {
 
 class BTCTable extends Component {
   render() {
-    const {DailyBTC} = this.props;
+    const {DailyBTC_USD, DailyBTC_EUR} = this.props;
     return (
       <table>
         <TableHeader />
-            <TableBody DailyBTC={DailyBTC}/>
+            <TableBody DailyBTC_USD={DailyBTC_USD} DailyBTC_EUR={DailyBTC_EUR}/>
       </table>
     );
   }
 }
 
 export default BTCTable;
-
-// COINMARKETCAP KEY d9e29c8b-e083-4337-a278-668aa1689477
-// curl -H "X-CMC_PRO_API_KEY: d9e29c8b-e083-4337-a278-668aa1689477" -H "Accept: application/json" -d "start=1&limit=1&convert=EUR" -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest
-// const rp = require('request-promise');
-// const requestOptions = {
-//   method: 'GET',
-//   uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
-//   qs: {
-//     'start': '1',
-//     'limit': '5000',
-//     'convert': 'USD'
-//   },
-//   headers: {
-//     'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
-//   },
-//   json: true,
-//   gzip: true
-// };
-
-// rp(requestOptions).then(response => {
-//   console.log('API call response:', response);
-// }).catch((err) => {
-//   console.log('API call error:', err.message);
-// });
