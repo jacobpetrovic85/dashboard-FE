@@ -20,6 +20,8 @@ let makeComma = (str) => {
   return str.toString().replace(/\./,',');
 };
 
+let makeFixed2 = num => num.toFixed(2);
+
 let calcNetWorth = (amount, price) => {
   return (amount * price).toFixed(2);
 };
@@ -39,15 +41,15 @@ let formatGainsCalcNumber = (amount, price, money) => R.compose(
   curriedCalcNetWorth(amount))
 (price);
 
-let makeRow = (row, money) => {
+let makeRow = (row, money, multiplier, fiat) => {
   let BTCprice = row.quote.EUR.price;
   return (
       <tr>
-      <td>{'EUR '}{makeComma(BTCprice)}</td>
+      <td>{fiat}{R.compose(makeComma,makeFixed2)(BTCprice * multiplier)}</td>
       <td>0,23833482</td>
-      <td>{'EUR '}{formatCalcNumber(0.23833482, BTCprice)}</td>
-      <td>{'EUR '}{makeComma(money.toFixed(2))}</td>
-      <td>{'EUR '}{formatGainsCalcNumber(0.23833482, BTCprice, money)}</td>
+      <td>{fiat}{formatCalcNumber(0.23833482, BTCprice * multiplier)}</td>
+      <td>{fiat}{makeComma(money.toFixed(2))}</td>
+      <td>{fiat}{formatGainsCalcNumber(0.23833482, BTCprice * multiplier, money)}</td>
       </tr>);
 };
 
@@ -56,8 +58,8 @@ let TableBody = (props) => {
   const {DailyBTC} = props;
   console.log("DailyBTC = ", DailyBTC);
   if (isNotNil(DailyBTC)){
-    const rowEUR = makeRow(DailyBTC.data[0],3800);
-    const rowUSD = makeRow(DailyBTC.data[0],(3800*1.23));
+    const rowEUR = makeRow(DailyBTC.data[0],3800, 1, '\u20AC');
+    const rowUSD = makeRow(DailyBTC.data[0],(3800*1.23), 1.22, '\u0024');
     return <tbody>{rowEUR}{rowUSD}</tbody>;
   } else {
     return<tbody></tbody>;

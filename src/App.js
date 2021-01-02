@@ -38,7 +38,7 @@ let postDeleteObj = (data, method) => {
 class App extends Component {
   state = {
     DailyHours: this.DailyHours || [],
-    DailyBTC: this.DailyBTC || {},
+    DailyBTC: this.DailyBTC || [],
   }
 
   async requestLatest () {
@@ -64,7 +64,7 @@ class App extends Component {
   }
 
   startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 10000);
-  startPollingBTC = () => this.interval = setInterval(this.handleBTCRequest.bind(this), 10000);
+  startPollingBTC = () => this.interval = setInterval(this.handleBTCRequest.bind(this), 600000);
 
   stopPolling = () => {
         if (this.interval) {
