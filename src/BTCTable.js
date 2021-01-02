@@ -16,20 +16,43 @@ let TableHeader = () => {
   );
 };
 
+let makeComma = (str) => {
+
+  return str.toString().replace(/\./,',');
+};
+
+let calcNetWorth = (amount, price) => {
+  return (amount * price).toFixed(2);
+};
+
+let curriedCalcNetWorth = R.curry(calcNetWorth);
+
+let isNotNil = R.complement(R.isEmpty);
+
+let formatCalcNumber = (amount, price) => R.compose(
+  makeComma,
+  curriedCalcNetWorth(amount))
+(price);
+
+let formatGainsCalcNumber = (amount, price, money) => R.compose(
+  makeComma,
+  x => (x - money).toFixed(2),
+  curriedCalcNetWorth(amount))
+(price);
+
 let makeRow = (row, money) => {
-    return (
-        <tr>
-        <td>{row.symbol}{row.last}</td>
-        <td>0,23833482</td>
-        <td>{row.symbol}{(0.23833482 * row.last).toFixed(2)}</td>
-        <td>{row.symbol}{(money).toFixed(2)}</td>
-        <td>{row.symbol}{(0.23833482 * row.last - money).toFixed(2)}</td>
-        </tr>);
+  let remainder = row.last - money;
+  return (
+      <tr>
+      <td>{row.symbol}{makeComma(row.last)}</td>
+      <td>0,23833482</td>
+      <td>{row.symbol}{formatCalcNumber(0.23833482, row.last)}</td>
+      <td>{row.symbol}{makeComma(money.toFixed(2))}</td>
+      <td>{row.symbol}{formatGainsCalcNumber(0.23833482, row.last, money)}</td>
+      </tr>);
 };
 
 let TableBody = (props) => {
-  const isNotNil = R.complement(R.isEmpty);
-  console.log("props = ", props);
   const {DailyBTC} = props;
   if (isNotNil(DailyBTC)){
     const rowEUR = makeRow(DailyBTC.EUR,3800);

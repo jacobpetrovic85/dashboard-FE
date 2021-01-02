@@ -36,7 +36,7 @@ class App extends Component {
   }
 
   startPolling = () => this.interval = setInterval(this.requestLatest.bind(this), 10000);
-  startPollingBTC = () => this.interval = setInterval(this.handleBTCRequest.bind(this), 900000);
+  startPollingBTC = () => this.interval = setInterval(this.handleBTCRequest.bind(this), 10000);
 
   stopPolling = () => {
         if (this.interval) {
