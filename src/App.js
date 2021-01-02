@@ -6,6 +6,34 @@ import * as R from 'ramda';
 import requests from './requests';
 
 
+// GET
+let getObj = {
+  method: 'GET',
+  headers: {
+    'Content-type': 'application/json'
+  }
+};
+
+// GET API
+let getApiObj = {
+  method: 'GET',
+  headers: {
+    'Content-type': 'application/json',
+    'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c',
+    'Accept-Encoding': 'gzip'
+  }
+};
+
+// POST
+let postDeleteObj = (data, method) => {
+  return {
+    method: 'method',
+  headers: {
+    'Content-type': 'application/json'
+  },
+    body: data
+  };
+};
 
 class App extends Component {
   state = {
@@ -14,7 +42,7 @@ class App extends Component {
   }
 
   async requestLatest () {
-    let response = await requests('', R.dissoc('body')(), 'GET', 'application/json')("http://localhost:3001/dailyHours/list")
+    let response = await requests(getObj, "http://localhost:3001/dailyHours/list")
       .then(responseJson=> {
         this.setState({
           DailyHours: responseJson.data.dailyHours
@@ -52,16 +80,16 @@ class App extends Component {
       })
     });
     let entryToRemove = JSON.stringify(R.filter(R.propEq('id', id), DailyHours)[0]);
-    requests(entryToRemove, R.identity, 'DELETE', 'application/json')('http://localhost:3001/dailyHours/delete');
+    requests(postDeleteObj(entryToRemove, 'DELETE'), 'http://localhost:3001/dailyHours/delete');
   }
 
   handleSubmit = (input) => {
     this.setState({DailyHours: [...this.state.DailyHours, input]});
-    requests(JSON.stringify(input), R.identity, 'POST', 'application/json')('http://localhost:3001/dailyHours/upload');
+    requests(postDeleteObj(JSON.stringify(input), 'POST'), 'http://localhost:3001/dailyHours/upload');
   }
 
   handleBTCRequest = () => {
-    requests('', R.dissoc('body')(), 'GET', 'application/json')('https://blockchain.info/ticker')
+    requests(getObj, 'https://blockchain.info/ticker')
       .then(responseJson=> {
         console.log("responseJson = ", responseJson);
         this.setState({
@@ -85,3 +113,26 @@ class App extends Component {
 export default App;
 
 // API key => d9e29c8b-e083-4337-a278-668aa1689477
+// COINMARKETCAP KEY d9e29c8b-e083-4337-a278-668aa1689477
+// curl -H "X-CMC_PRO_API_KEY: d9e29c8b-e083-4337-a278-668aa1689477" -H "Accept: application/json" -d "start=1&limit=1&convert=EUR" -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest
+// const rp = require('request-promise');
+// const requestOptions = {
+//   method: 'GET',
+//   uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
+//   qs: {
+//     'start': '1',
+//     'limit': '5000',
+//     'convert': 'USD'
+//   },
+//   headers: {
+//     'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
+//   },
+//   json: true,
+//   gzip: true
+// };
+
+// rp(requestOptions).then(response => {
+//   console.log('API call response:', response);
+// }).catch((err) => {
+//   console.log('API call error:', err.message);
+// });

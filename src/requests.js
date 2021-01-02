@@ -1,21 +1,8 @@
-let requests = (data, fn, method, contentType) => {
-  let obj = {
-    method: method,
-    headers: {
-      'Content-type': contentType
-    },
-    body: data
-  };
-  let newObj = fn(obj);
-  console.log("newObj = ", newObj);
-  return async (url) => {
-
-    const response = await fetch(url, newObj);
-
+let requests = async (obj, url) => {
+    const response = await fetch(url, obj);
     const resData = await response.json();
 
     return resData;
-  };
 };
 
 
