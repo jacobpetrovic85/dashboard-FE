@@ -20,7 +20,7 @@ let makeComma = (str) => {
   return str.toString().replace(/\./,',');
 };
 
-let makeFixed2 = num => num.toFixed(2);
+let makeFixed2 = num => Number(num).toFixed(2);
 
 let calcNetWorth = (amount, price) => {
   return (amount * price).toFixed(2);
@@ -48,6 +48,7 @@ let BTCprice = (row, fiat) => R.compose(
 (row);
 
 let makeRow = (row, money, fiatSymbol, fiat) => {
+  console.log("row = ", row);
   let price = BTCprice(row,fiat);
   return (
       <tr>

@@ -125,29 +125,3 @@ class App extends Component {
 }
 
 export default App;
-
-// API key => d9e29c8b-e083-4337-a278-668aa1689477
-// COINMARKETCAP KEY d9e29c8b-e083-4337-a278-668aa1689477
-// curl -H "X-CMC_PRO_API_KEY: d9e29c8b-e083-4337-a278-668aa1689477" -H "Accept: application/json" -d "start=1&limit=1&convert=EUR" -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest
-// https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=1&convert=EUR
-// const rp = require('request-promise');
-// const requestOptions = {
-//   method: 'GET',
-//   uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
-//   qs: {
-//     'start': '1',
-//     'limit': '5000',
-//     'convert': 'USD'
-//   },
-//   headers: {
-//     'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
-//   },
-//   json: true,
-//   gzip: true
-// };
-
-// rp(requestOptions).then(response => {
-//   console.log('API call response:', response);
-// }).catch((err) => {
-//   console.log('API call error:', err.message);
-// });
