@@ -41,6 +41,7 @@ class App extends Component {
     DailyHours: this.DailyHours || [],
     DailyBTC_EUR: this.DailyBTC_EUR || [],
     DailyBTC_USD: this.DailyBTC_USD || [],
+    // ResourceSelector: this.ResourceSelector,
   }
 
   async requestLatest () {

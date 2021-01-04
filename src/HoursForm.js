@@ -53,11 +53,3 @@ class HoursForm extends Component {
 }
 
 export default HoursForm;
-      //   <input
-      // type="text"
-      // name="resource"
-      // id="resource"
-      // value={resource}
-      // onChange={this.handleChange}
-      // />
-//<Moment format="Do MMMM YYYY - HH:mm">{dateToFormat}</Moment>
