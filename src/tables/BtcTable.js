@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-import {requests} from '../requests/requests';
 import {makeRow, isNotNil} from '../tables/TableLogic.js';
 
 let TableHeader = () => {

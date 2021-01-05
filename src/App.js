@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import * as R from 'ramda';
-import Moment from 'react-moment';
 import moment from 'moment';
 
 import HoursForm from './forms/HoursForm';
 import DailyHoursTable from './tables/DailyHoursTable';
 import BtcTable from './tables/BtcTable';
 import {requests} from './requests/requests';
-import {getObj, getApiObj, postDeleteObj} from './requests/methodObjects';
+import {getObj, postDeleteObj} from './requests/methodObjects';
+// import {handleBTCRequests} from './requests/calls';
 
 class App extends Component {
   state = {
@@ -63,8 +63,6 @@ class App extends Component {
     await requests(postDeleteObj(entryToRemove, 'DELETE'), 'http://localhost:3001/dailyHours/delete');
   }
 
-
-
   handleBTCRequests = async () => {
     let eurResponse  = await requests(getObj, 'http://localhost:3001/dailyHours/calling/params?start=1&limit=1&convert=EUR');
     this.setState({
@@ -75,6 +73,8 @@ class App extends Component {
       DailyBTC_USD: usdResponse.data
     });
   }
+
+  // handleBTCRequests(this.state);
 
     handleSubmit = async (input) => {
     this.setState({DailyHours: [...this.state.DailyHours, input]});
@@ -107,7 +107,7 @@ class App extends Component {
       handleSubmit={this.handleSubmit}
       handleChange={this.handleChange}
       submitForm={this.submitForm}
-      HoursFormValue={this.state.HoursFormValue}
+      HoursFormValue={HoursFormValue}
         />
         <DailyHoursTable
       DailyHours={DailyHours}
