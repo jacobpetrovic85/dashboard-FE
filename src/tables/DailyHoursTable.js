@@ -15,6 +15,7 @@ let TableHeader = () => {
 
 let TableBody = (props) => {
   const rows = props.DailyHours.map((row,index) => {
+    console.log('row in tablebody = ', row.id);
     return (
           <tr key={row.id}>
           <td>{row.resource}</td>

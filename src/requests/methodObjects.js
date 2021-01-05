@@ -19,7 +19,7 @@ export let getApiObj = {
 // POST
 export let postDeleteObj = (data, method) => {
   return {
-    method: 'method',
+    method: method,
   headers: {
     'Content-type': 'application/json'
   },

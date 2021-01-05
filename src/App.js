@@ -23,6 +23,13 @@ class App extends Component {
     // ResourceSelector: this.ResourceSelector,
   }
 
+  initialStateHoursFormValue = {
+      // resource: '',
+      hours: '',
+      day: '',
+      id: '',
+    }
+
   async requestLatest () {
     let response = await requests(getObj, "http://localhost:3001/dailyHours/list");
     this.setState({
@@ -77,18 +84,19 @@ class App extends Component {
   // handleBTCRequests(this.state);
 
     handleSubmit = async (input) => {
+      console.log('inpout in handleSumbit = ', input);
     this.setState({DailyHours: [...this.state.DailyHours, input]});
     await requests(postDeleteObj(JSON.stringify(input), 'POST'), 'http://localhost:3001/dailyHours/upload');
   }
 
-    submitForm = (props) => {
-    this.handleSubmit(this.props.state);
-    this.props.setState(this.props.initialState);
+  submitForm = () => {
+    console.log('this.state.HoursFormValue = ', this.state.HoursFormValue);
+    this.handleSubmit(this.state.HoursFormValue);
+    this.setState(this.state.HoursFormValue);
     }
 
     handleChange = (event) => {
-      console.log('event = ', event);
-      console.log('this.props in handle change', this.props);
+      console.log('event target value = ', event.target.value);
       let {name, value} = event.target;
       let date = moment().format('Do MMMM YYYY - HH:mm');
       this.setState({

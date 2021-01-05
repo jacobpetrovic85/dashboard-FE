@@ -1,4 +1,5 @@
 export async function requests (obj, url)  {
+  console.log('obj = ', obj);
     const response = await fetch(url, obj);
     const resdata = await response.json();
     return resdata;
