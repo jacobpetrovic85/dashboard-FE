@@ -15,6 +15,7 @@ let getObj = {
   }
 };
 
+// TODO: Factor these out
 // GET API
 let getApiObj = {
   method: 'GET',
@@ -45,12 +46,10 @@ class App extends Component {
   }
 
   async requestLatest () {
-    let response = await req.requests(getObj, "http://localhost:3001/dailyHours/list")
-      .then(responseJson=> {
-        this.setState({
-          DailyHours: responseJson.data.dailyHours
-        });
-      });
+    let response = await req.requests(getObj, "http://localhost:3001/dailyHours/list");
+    this.setState({
+      DailyHours: response.data.dailyHours
+    });
   };
 
   // TODO: replace lifecycle calls with new not soon to be deprecated ones
@@ -70,47 +69,36 @@ class App extends Component {
   startPollingBTC = () => this.interval = setInterval(this.handleBTCRequests.bind(this), 600000);
 
   stopPolling = () => {
-        if (this.interval) {
-            clearInterval(this.interval);
-        }
+    if (this.interval) {
+      clearInterval(this.interval);
     }
+  }
 
-  removeHours = (id) => {
+  removeHours = async (id) => {
     let {DailyHours} =  this.state;
     this.setState({
-      DailyHours: DailyHours.filter((day, i) => {
+      DailyHours: DailyHours.filter((day, i) => { // TODO factor out
         return day.id !== id;
       })
     });
     let entryToRemove = JSON.stringify(R.filter(R.propEq('id', id), DailyHours)[0]);
-    req.requests(postDeleteObj(entryToRemove, 'DELETE'), 'http://localhost:3001/dailyHours/delete');
+    await req.requests(postDeleteObj(entryToRemove, 'DELETE'), 'http://localhost:3001/dailyHours/delete');
   }
 
-  handleSubmit = (input) => {
+  handleSubmit = async (input) => {
     this.setState({DailyHours: [...this.state.DailyHours, input]});
-    req.requests(postDeleteObj(JSON.stringify(input), 'POST'), 'http://localhost:3001/dailyHours/upload');
+    await req.requests(postDeleteObj(JSON.stringify(input), 'POST'), 'http://localhost:3001/dailyHours/upload');
   }
 
-  handleBTCRequests = () => {
-    req.requests(getObj, 'http://localhost:3001/dailyHours/calling/params?start=1&limit=1&convert=EUR')
-      .then(responseJson=> {
-        this.setState({
-          DailyBTC_EUR: responseJson.data
-        });
-      });
-    req.requests(getObj, 'http://localhost:3001/dailyHours/calling/params?start=1&limit=1&convert=USD')
-      .then(responseJson=> {
-        this.setState({
-          DailyBTC_USD: responseJson.data
-        });
-      });
-    // req.xmlRequests(getObj, 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml')
-    //   .then(responseJson=> {
-    //     // this.setState({
-    //     //   EUR_2_USD_rate: responseJson.data
-    //     // });
-    //   });
-    //https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
+  handleBTCRequests = async () => {
+    let eurResponse  = await req.requests(getObj, 'http://localhost:3001/dailyHours/calling/params?start=1&limit=1&convert=EUR');
+    this.setState({
+      DailyBTC_EUR: eurResponse.data
+    });
+    let usdResponse = await req.requests(getObj, 'http://localhost:3001/dailyHours/calling/params?start=1&limit=1&convert=USD');
+    this.setState({
+      DailyBTC_USD: usdResponse.data
+    });
   }
 
   render() {
