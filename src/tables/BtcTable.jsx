@@ -6,11 +6,11 @@ let TableHeader = () => {
   return (
       <thead>
       <tr>
-      <th>BTC Price</th>
-      <th>BTC owned</th>
-      <th>Asset value</th>
-      <th>Invested</th>
-      <th>Gained</th>
+        <th>BTC Price</th>
+        <th>BTC owned</th>
+        <th>Asset value</th>
+        <th>Invested</th>
+        <th>Gained</th>
       </tr>
       </thead>
   );
@@ -31,8 +31,8 @@ let BtcTable = (props) => {
   const {DailyBTC_USD, DailyBTC_EUR} = props;
   return (
       <table>
-      <TableHeader />
-      <TableBody DailyBTC_USD={DailyBTC_USD} DailyBTC_EUR={DailyBTC_EUR}/>
+        <TableHeader />
+        <TableBody DailyBTC_USD={DailyBTC_USD} DailyBTC_EUR={DailyBTC_EUR}/>
       </table>
   );
 };
